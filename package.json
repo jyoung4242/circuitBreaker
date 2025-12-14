@@ -1,0 +1,31 @@
+{
+  "name": "circuitbreaker",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview",
+    "lint": "eslint \"**/*.{ts,tsx,js}\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@peasy-lib/peasy-ui": "^0.9.58",
+    "excalibur": "^0.32.0-alpha.1596",
+    "simpler-color": "^1.0.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@typescript-eslint/eslint-plugin": "^8.49.0",
+    "@typescript-eslint/parser": "^8.49.0",
+    "eslint": "^9.39.2",
+    "json": "^11.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.7"
+  }
+}
