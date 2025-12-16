@@ -1,0 +1,11 @@
+{
+  "loader": {
+    "button": "Play",
+    "attribution": "Made with Excalibur.js"
+  },
+  "home": {
+    "button": "Start Level",
+    "hover": "Hover",
+    "click": "Click"
+  }
+}

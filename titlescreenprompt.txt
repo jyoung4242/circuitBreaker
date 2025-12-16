@@ -1,0 +1,3 @@
+I need an image generated to fit a mobile game title screen called "Cricuit Breaker" where you are a field electrician whose racing against time to properly repair and rewire customer's electrical panels that are all messed up.
+There should be some hero text in the Tile, and it should serve as a Loading Screen, the a Play button should pop up.  Being a PWA the button will unlock the audio context for the browser game, so its super important.  I'd also like for there to be an flag icon to represent internationalization options.
+The game is mobile portrait and the canvas is 500 px wide versus 700 px high.

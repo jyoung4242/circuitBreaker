@@ -1,0 +1,16 @@
+{
+  "loader": {
+    "button": "Jugar",
+    "attribution": "Hecho con Excalibur.js"
+  },
+  "ui": {
+    "start": "Start",
+    "pause": "Pause"
+  },
+  "hud": {
+    "lives": "Lives: {count}"
+  },
+  "dialog": {
+    "panel_overload": "Panel overloaded!"
+  }
+}

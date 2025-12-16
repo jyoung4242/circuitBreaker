@@ -2,9 +2,9 @@ export const electrified = `#version 300 es
 precision mediump float;
 
 // Lightning parameters
-const float speed = 0.25;
-const float intensity = 0.50;
-const float branches = 2.5;
+const float speed = 0.5;
+const float intensity = 0.70;
+const float branches = 2.;
 
 // color constants
 const vec3 boltColor = vec3(0.99, 0.99, 1.0);
@@ -13,7 +13,8 @@ const vec3 glowColor = vec3(0.44, 0.66, 1.0);
 uniform vec2 u_resolution;
 uniform float u_time_ms;
 uniform float u_opacity;
-uniform sampler2D u_graphic; // background sprite texture
+uniform sampler2D u_graphic; // background sprite texture 
+uniform bool u_isEnergized;
 
 in vec2 v_uv;
 out vec4 fragColor;
@@ -39,6 +40,7 @@ float lightning(vec2 uv, float t, float offset) {
 }
 
 void main() {
+    
     // Normalize UVs
     vec2 uv = v_uv * 2.0 - 1.0;
     uv.x *= u_resolution.x / u_resolution.y;
@@ -46,7 +48,13 @@ void main() {
 
     // --- Sample background texture first ---
     vec3 baseColor = texture(u_graphic, v_uv).rgb;
-
+    if(!u_isEnergized)
+    {
+        fragColor = vec4(baseColor, u_opacity); 
+        return;
+    }
+    
+    
     // --- Compute lightning ---
     float bolts = 0.0;
     bolts += lightning(uv, t, 0.0) * step(0.7, fract(t * 0.3));

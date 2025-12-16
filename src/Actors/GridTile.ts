@@ -1,5 +1,21 @@
-import { Color, Engine, ExcaliburGraphicsContext, Graphic, Material, ScreenElement, vec, Vector } from "excalibur";
-import { harmony, lightness, triad } from "simpler-color";
+/* eslint-disable no-unused-vars */
+
+import {
+  Color,
+  Engine,
+  ExcaliburGraphicsContext,
+  Graphic,
+  Material,
+  Random,
+  RotationType,
+  ScreenElement,
+  toRadians,
+  Vector,
+  PointerEvent,
+  Buttons,
+  PointerButton,
+} from "excalibur";
+import { harmony, lightness } from "simpler-color";
 import { electrified } from "../Shaders/electrified";
 
 type PanelColors = {
@@ -10,13 +26,29 @@ type PanelColors = {
   accent: string;
 };
 
+export enum TileType {
+  STRAIGHT = 0,
+  CORNER = 1,
+  TJUNCTION = 2,
+  FOURWAY = 3,
+  CRISSCROSS = 4,
+  DEADEND = 5,
+}
+
 export class GridTile extends ScreenElement {
   electMat: Material | null = null;
   tilesize: number;
-  constructor(pos: Vector, size: Vector) {
-    let startingpos = pos.sub(size.scale(vec(0.5, 0.5)));
-    super({ pos: startingpos, anchor: Vector.Zero, width: size.x, height: size.y });
+  type: TileType;
+  rnd: Random = new Random();
+  isEnergized: boolean = false;
+
+  constructor(pos: Vector, size: Vector, type?: TileType) {
+    super({ pos, width: size.x, height: size.y, anchor: Vector.Half });
     this.tilesize = size.x;
+    console.log("type: ", type);
+
+    if (type == undefined) type = this.rnd.integer(0, 5) as TileType;
+    this.type = type;
   }
   onInitialize(eng: Engine): void {
     this.electMat = eng.graphicsContext.createMaterial({
@@ -27,7 +59,7 @@ export class GridTile extends ScreenElement {
     console.log(baseColors);
 
     this.graphics.use(
-      new TileGraphic(this.tilesize, [
+      new TileGraphic(this.tilesize, this.type, [
         baseColors.secondary,
         baseColors.accent,
         baseColors.accent,
@@ -35,19 +67,59 @@ export class GridTile extends ScreenElement {
         baseColors.accent,
       ])
     );
-    // this.graphics.material = this.electMat;
+    this.graphics.material = this.electMat;
+    console.log("setting pointer");
+
+    this.on("pointerup", this.pHandler);
+  }
+
+  onRemove(): void {
+    this.off("pointerup", this.pHandler);
+  }
+
+  pHandler = (e: PointerEvent) => {
+    if (e.button == PointerButton.Left) {
+      if (this.rotation == toRadians(0)) {
+        this.actions.rotateTo(toRadians(90), 5, RotationType.Clockwise);
+      } else if (this.rotation == toRadians(90)) {
+        this.actions.rotateTo(toRadians(180), 5, RotationType.Clockwise);
+      } else if (this.rotation == toRadians(180)) {
+        this.actions.rotateTo(toRadians(270), 5, RotationType.Clockwise);
+      } else {
+        this.actions.rotateTo(toRadians(0), 5, RotationType.Clockwise);
+      }
+    } else if (e.button == PointerButton.Right) {
+      this.isEnergized = !this.isEnergized;
+    }
+  };
+
+  set energized(isEnergized: boolean) {
+    this.isEnergized = isEnergized;
+  }
+
+  get energized(): boolean {
+    return this.isEnergized;
+  }
+
+  onPreUpdate(): void {
+    if (this.electMat) {
+      this.electMat.update(s => {
+        s.trySetUniformBoolean("u_isEnergized", this.isEnergized);
+      });
+    }
   }
 }
 
 export class TileGraphic extends Graphic {
   size: number;
   colors: string[];
-
+  rnd: Random = new Random();
   offscreenCanvas: HTMLCanvasElement;
-  wireCanvas: HTMLCanvasElement;
+  type: TileType;
+  // wireCanvas: HTMLCanvasElement;
 
-  constructor(size: number, colors: string[]) {
-    super();
+  constructor(size: number, type: TileType, colors: string[]) {
+    super({ width: size, height: size });
     let pnlColor: PanelColors = {
       border: colors[0],
       highlight: colors[1],
@@ -55,24 +127,23 @@ export class TileGraphic extends Graphic {
       center: colors[3],
       accent: colors[4],
     };
-    this.offscreenCanvas = generatePanelTile(size, pnlColor, size / 18);
-    this.wireCanvas = generateStraightWire(size, size / 15, triad(pnlColor.accent, 1));
-
+    this.offscreenCanvas = generatePanelTile(size, pnlColor, size / 18, type);
+    this.type = type;
     this.size = size;
     this.colors = colors;
   }
 
   clone(): Graphic {
-    return new TileGraphic(this.size, this.colors);
+    return new TileGraphic(this.size, this.type, this.colors);
   }
 
   protected _drawImage(ex: ExcaliburGraphicsContext, x: number, y: number): void {
     ex.drawImage(this.offscreenCanvas, x, y);
-    ex.drawImage(this.wireCanvas, x, y);
+    // ex.drawImage(this.wireCanvas, x, y);
   }
 }
 
-export function generatePanelTile(size: number, colors: PanelColors, borderSize = 1): HTMLCanvasElement {
+export function generatePanelTile(size: number, colors: PanelColors, borderSize = 1, wireType: number = 0): HTMLCanvasElement {
   if (size < 4) {
     throw new Error("Tile size too small for panel styling");
   }
@@ -120,6 +191,32 @@ export function generatePanelTile(size: number, colors: PanelColors, borderSize 
 
   // Right
   ctx.fillRect(size - inner - bevelSize, inner, bevelSize, innerSize);
+
+  //draw wire
+  console.log("wiretype: ", wireType);
+
+  switch (wireType) {
+    case 0:
+      ctx.drawImage(generateStraightWire(size, borderSize, colors.accent), 0, 0);
+      break;
+    case 1:
+      ctx.drawImage(generateLWire(size, borderSize, colors.accent), 0, 0);
+      break;
+    case 2:
+      ctx.drawImage(generateTWire(size, borderSize, colors.accent), 0, 0);
+      break;
+    case 3:
+      ctx.drawImage(generateCrossoverWire(size, borderSize, colors.accent), 0, 0);
+      break;
+    case 4:
+      ctx.drawImage(generateCrossWire(size, borderSize, colors.accent), 0, 0);
+      break;
+    case 5:
+      ctx.drawImage(generateDeadEndWire(size, borderSize, colors.accent), 0, 0);
+      break;
+    default:
+      ctx.drawImage(generateStraightWire(size, borderSize, colors.accent), 0, 0);
+  }
 
   return canvas;
 }
