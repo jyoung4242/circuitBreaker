@@ -168,6 +168,7 @@ class UIButtonGraphic extends Graphic {
     });
 
     // draw image to ex
+    this.cnv.setAttribute("forceUpload", "true");
     ex.drawImage(this.cnv, x, y + pressOffset);
   }
 
