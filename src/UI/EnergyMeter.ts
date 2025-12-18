@@ -40,11 +40,11 @@ class EnergyTextGraphic extends Graphic {
   constructor() {
     super({
       width: 100,
-      height: 20,
+      height: 40,
     });
     this.cnv = document.createElement("canvas");
     this.cnv.width = 100;
-    this.cnv.height = 20;
+    this.cnv.height = 40;
     this.ctx = this.cnv.getContext("2d");
   }
 
@@ -56,14 +56,14 @@ class EnergyTextGraphic extends Graphic {
     let cnv = this.cnv;
     if (this.ctx === null) return;
     let ctx = this.ctx;
-    ctx?.clearRect(0, 0, 100, 20);
+    ctx?.clearRect(0, 0, 100, 40);
     ctx.fillStyle = "#FFFFFF";
 
     drawText(ctx, "5/5", {
       x: 0,
       y: 0,
       width: 100,
-      height: 20,
+      height: 40,
       align: "center",
       font: "BagelFat",
       fontSize: 32,
