@@ -10,8 +10,15 @@ export class Background extends ScreenElement {
 }
 
 class bgGraphic extends Graphic {
+  cnv: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D | null;
+
   constructor() {
     super();
+    this.cnv = document.createElement("canvas");
+    this.cnv.width = 500;
+    this.cnv.height = 750;
+    this.ctx = this.cnv.getContext("2d");
   }
 
   clone(): Graphic {
@@ -19,29 +26,24 @@ class bgGraphic extends Graphic {
   }
 
   _drawImage(ex: ExcaliburGraphicsContext, x: number, y: number): void {
-    const cnv = document.createElement("canvas");
-    cnv.width = 500;
-    cnv.height = 750;
-
-    const ctx = cnv.getContext("2d");
-    if (!ctx) return;
+    if (!this.ctx) return;
+    this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height);
 
     // Centered radial gradient (matches CSS "circle")
-    const gradient = ctx.createRadialGradient(
-      cnv.width / 2,
-      cnv.height / 2,
+    const gradient = this.ctx.createRadialGradient(
+      this.cnv.width / 2,
+      this.cnv.height / 2,
       0,
-      cnv.width / 2,
-      cnv.height / 2,
-      Math.max(cnv.width, cnv.height)
+      this.cnv.width / 2,
+      this.cnv.height / 2,
+      Math.max(this.cnv.width, this.cnv.height)
     );
 
     gradient.addColorStop(0.17, "hsla(235, 35%, 29%, 1)");
     gradient.addColorStop(1.0, "hsla(231, 56%, 14%, 1)");
 
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, cnv.width, cnv.height);
-
-    ex.drawImage(cnv, x, y);
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(0, 0, this.cnv.width, this.cnv.height);
+    ex.drawImage(this.cnv, x, y);
   }
 }
