@@ -113,6 +113,8 @@ class UIButtonGraphic extends Graphic {
   private radius = 16;
   private depthIdle = 10;
   private depthPressed = 4;
+  private cnv: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D;
   colors: UIButtonColors = {
     mainStarting: Color.LightGray,
     bottomStarting: Color.DarkGray,
@@ -126,6 +128,11 @@ class UIButtonGraphic extends Graphic {
     this.getState = getState;
 
     if (buttonConfig.colors) this.colors = buttonConfig.colors;
+
+    this.cnv = document.createElement("canvas");
+    this.cnv.width = this.size.x;
+    this.cnv.height = this.size.y;
+    this.ctx = this.cnv.getContext("2d")!;
   }
 
   clone(): UIButtonGraphic {
@@ -134,31 +141,24 @@ class UIButtonGraphic extends Graphic {
 
   protected _drawImage(ex: ExcaliburGraphicsContext, x: number, y: number): void {
     const state = this.getState();
-
     const isPressed = state === "pressed";
-
     const depth = isPressed ? this.depthPressed : this.depthIdle;
     const pressOffset = isPressed ? PRESS_OFFSET_PX : 0;
 
-    const cnv = document.createElement("canvas");
-    cnv.width = this.size.x;
-    cnv.height = this.size.y;
-    const ctx = cnv.getContext("2d");
-    if (!ctx) return;
-
+    this.ctx.clearRect(0, 0, this.size.x, this.size.y);
     // Bottom depth layer (CSS ::after)
-    this.drawRoundedRect(ctx, 0, depth, this.size.x, this.size.y - depth, this.radius, this.bottomGradient(ctx));
+    this.drawRoundedRect(this.ctx, 0, depth, this.size.x, this.size.y - depth, this.radius, this.bottomGradient(this.ctx));
 
     // Top face
-    this.drawRoundedRect(ctx, 0, 0, this.size.x, this.size.y - depth, this.radius, this.topGradient(ctx, state));
+    this.drawRoundedRect(this.ctx, 0, 0, this.size.x, this.size.y - depth, this.radius, this.topGradient(this.ctx, state));
 
-    ctx.fillStyle = this.config.textOptions?.color?.toString() ?? "#000000";
-    ctx.strokeStyle = this.config.textOptions?.color?.toString() ?? "#000000";
+    this.ctx.fillStyle = this.config.textOptions?.color?.toString() ?? "#000000";
+    this.ctx.strokeStyle = this.config.textOptions?.color?.toString() ?? "#000000";
 
     let thisFont = this.config.textOptions?.font as Font | undefined;
 
     // Draw any text
-    drawText(ctx, this._getTextForState(state), {
+    drawText(this.ctx, this._getTextForState(state), {
       x: 0,
       y: 0,
       width: this.size.x,
@@ -168,7 +168,7 @@ class UIButtonGraphic extends Graphic {
     });
 
     // draw image to ex
-    ex.drawImage(cnv, x, y + pressOffset);
+    ex.drawImage(this.cnv, x, y + pressOffset);
   }
 
   private _getTextForState(state: UIButtonState): string {

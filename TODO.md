@@ -1,0 +1,9 @@
+- [ ] Game Loop
+- [ ] Power up (Bonuses) system and store screen on home scene
+- [ ] Daily and Weekly Missions
+- [ ] Analytics to support missions
+- [ ] Timer system for recharging energy
+- [ ] Currency System for buying bonuses + rewards for missions/levels
+- [ ] Daily Playtracking
+- [ ] Modal System
+- [ ] Playing Card Minigame????
