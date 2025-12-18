@@ -49,8 +49,8 @@ export class UIButton extends ScreenElement {
   private ignoreLeave = false;
   public emitter: EventEmitter<UIButtonEvents>;
 
-  constructor(name: string, size: Vector, config: UIButtonOptions) {
-    super({ name, width: size.x, height: size.y });
+  constructor(name: string, pos: Vector, size: Vector, config: UIButtonOptions) {
+    super({ name, pos, width: size.x, height: size.y });
     this.callback = config.callback ?? (() => {});
     this.graphics.use(new UIButtonGraphic(size, () => this.state, config));
     this.emitter = new EventEmitter();
@@ -67,6 +67,7 @@ export class UIButton extends ScreenElement {
       if (this.ignoreLeave) return;
 
       this.isHovered = false;
+      this.isPressed = false;
       this.updateState();
     });
 

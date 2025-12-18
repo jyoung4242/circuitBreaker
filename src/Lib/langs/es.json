@@ -3,14 +3,9 @@
     "button": "Jugar",
     "attribution": "Hecho con Excalibur.js"
   },
-  "ui": {
-    "start": "Start",
-    "pause": "Pause"
-  },
-  "hud": {
-    "lives": "Lives: {count}"
-  },
-  "dialog": {
-    "panel_overload": "Panel overloaded!"
+  "home": {
+    "button": "Nivel inicial",
+    "hover": "Nivel inicial",
+    "click": "A partir de..."
   }
 }

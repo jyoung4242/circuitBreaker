@@ -5,7 +5,7 @@
   },
   "home": {
     "button": "Start Level",
-    "hover": "Hover",
-    "click": "Click"
+    "hover": "Start Level",
+    "click": "Starting..."
   }
 }

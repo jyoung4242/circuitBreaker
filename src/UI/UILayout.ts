@@ -202,12 +202,15 @@ export class UIContainer extends ScreenElement {
     // use placement strategies via strategy pattern
 
     let placementStrategy = this.getPlacementStrategy(placementCursor);
+    console.log(this, this._childrenContainers);
 
     placementStrategy.positionChildren(this._childrenContainers);
     return;
   }
 
   getPlacementStrategy(placementCursor: Vector): PlacementStrategy {
+    console.log("getting placement strategies", this._positionContentStrategy);
+
     if (this._positionContentStrategy === "fixed") {
       return new FixedPositioningStrategy(placementCursor, this._layoutDirection, this._alignmentContentStrategy, this._gap);
     } else if (this._positionContentStrategy === "anchor-end") {
@@ -308,6 +311,7 @@ export class FixedPositioningStrategy extends PlacementStrategy {
 
 export class CenterPositioningStrategy extends PlacementStrategy {
   positionChildren(children: UIContainer[]): void {
+    console.log("here");
     if (children.length === 0) return;
     if (children.some(child => !child.parentContainer)) return; // Exit the method early
     let parentWidth = children[0].parentDims.x;
@@ -315,6 +319,8 @@ export class CenterPositioningStrategy extends PlacementStrategy {
     let totalChildrenDimension = 0;
     let parent = children[0].parentContainer;
     let parentDims = children[0].parentDims;
+
+    console.log("positioning center");
 
     for (const child of children) {
       if (this.layoutDirection === "horizontal") {
@@ -340,6 +346,8 @@ export class CenterPositioningStrategy extends PlacementStrategy {
     } else {
       this.cursor.y = (parentHeight - totalChildrenDimension) / 2;
     }
+
+    console.log(this.cursor);
 
     for (const child of children) {
       this.alignChild(child, parentDims, parent!.padding);

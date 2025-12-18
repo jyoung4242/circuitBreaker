@@ -3,6 +3,11 @@ import { FontSource, ImageSource } from "excalibur";
 import title from "./Assets/Title.png"; // replace this
 import bagelFont from "./Assets/BagelFat.ttf";
 import { CustomLoader } from "./Loader/CustomLoader";
+import BarsPanel from "./Assets/BarsPanel.png";
+import bolt from "./Assets/bolt.png";
+import clock from "./Assets/watch.png";
+import coin from "./Assets/coin.png";
+
 import { I18n } from "./Lib/I18n";
 import en from "./Lib/langs/en.json";
 import es from "./Lib/langs/es.json";
@@ -18,6 +23,10 @@ i18n.registerLocale("de", de);
 export const Resources = {
   title: new ImageSource(title),
   font: new FontSource(bagelFont, "BagelFat", {}),
+  barsPanel: new ImageSource(BarsPanel),
+  bolt: new ImageSource(bolt),
+  coin: new ImageSource(coin),
+  clock: new ImageSource(clock),
 };
 
 export const loader = new CustomLoader(i18n);
