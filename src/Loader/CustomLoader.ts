@@ -1,5 +1,9 @@
 /* eslint-disable no-unused-vars */
 
+/*
+TODO - make this responsive to different screen sizes
+*/
+
 import { Color, DefaultLoader, Engine, Loadable, LoaderOptions, Screen, Util } from "excalibur";
 import { I18n } from "../Lib/I18n";
 export class CustomLoader extends DefaultLoader {

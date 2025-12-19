@@ -1,4 +1,4 @@
-/*style.css*/
+/*style.css - Responsive Version*/
 @font-face {
   font-family: "BagelFat";
   src: url(./Assets/BagelFat.ttf);
@@ -60,11 +60,11 @@ body {
   }
 }
 
-/* startbutton styling */
+/* startbutton styling - Now Responsive */
 .start_button {
   position: absolute;
-  width: 476px;
-  height: 150px;
+  width: min(476px, 90vw);
+  height: clamp(80px, 15vh, 150px);
   top: 85%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -78,17 +78,18 @@ body {
   cursor: pointer;
   display: inline-block;
   font-family: "BagelFat";
+  font-size: clamp(24px, 5vw, 48px);
   font-weight: 700;
   letter-spacing: 0.8px;
-  line-height: 20px;
+  line-height: 1.2;
   margin: 0;
   outline: none;
   overflow: visible;
-  padding: 13px 16px;
+  padding: clamp(10px, 2vh, 13px) 16px;
   text-align: center;
   text-transform: uppercase;
   touch-action: manipulation;
-  transition: filter 0.2s top 0.4s opacity 1s ease-in-out;
+  transition: filter 0.2s, top 0.4s, opacity 1s ease-in-out;
   user-select: none;
   -webkit-user-select: none;
   vertical-align: middle;
@@ -110,14 +111,10 @@ body {
   right: 0;
   top: 7px;
   bottom: 10px;
-
-  /* BOTTOM GRADIENT */
   background: linear-gradient(to bottom, #e57504, #e1690a);
-
   border-radius: 16px;
   border: solid transparent;
   border-width: 0 0 4px;
-
   background-clip: padding-box;
   z-index: -1;
 }
@@ -142,10 +139,9 @@ body {
   top: 87%;
 }
 
-/* Loading Bar Styling */
+/* Loading Bar Styling - Responsive */
 .loading-container {
-  width: 400px;
-  max-width: 90%;
+  width: min(400px, 90vw);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -179,7 +175,7 @@ body {
   margin-top: 16px;
   text-align: center;
   color: #e57504;
-  font-size: 14px;
+  font-size: clamp(12px, 2vw, 14px);
   letter-spacing: 1px;
 }
 
@@ -190,16 +186,15 @@ body {
   transition: opacity 0.6s ease, visibility 0s linear 0.6s;
 }
 
-/* Game Title Styling */
-
+/* Game Title Styling - Responsive */
 .title {
   display: block;
   position: absolute;
-  top: 10px;
+  top: clamp(5px, 2vh, 10px);
   left: 50%;
   transform: translateX(-50%);
-  width: 500px;
-  height: 750px;
+  width: min(500px, 80vw);
+  height: auto;
   justify-content: center;
   align-items: center;
   z-index: 1003;
@@ -207,38 +202,37 @@ body {
 }
 
 .title-image {
-  /* transform-origin: center; */
   position: absolute;
-  top: 30px;
-  left: 0;
-
+  top: clamp(15px, 4vh, 30px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: auto;
+  max-width: 500px;
   animation: titleBounce 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 @keyframes titleBounce {
   0% {
-    transform: scale(0);
+    transform: translateX(-50%) scale(0);
     opacity: 0;
   }
-
   40% {
-    transform: scale(1.1);
+    transform: translateX(-50%) scale(1.1);
     opacity: 1;
   }
-
   70% {
-    transform: scale(0.96);
+    transform: translateX(-50%) scale(0.96);
   }
-
   85% {
-    transform: scale(1.03);
+    transform: translateX(-50%) scale(1.03);
   }
-
   100% {
-    transform: scale(1);
+    transform: translateX(-50%) scale(1);
   }
 }
 
+/* Dude Image - Responsive */
 .dude-image-panel {
   display: block;
   position: absolute;
@@ -254,23 +248,27 @@ body {
 }
 
 .dude-image {
-  /* transform-origin: center; */
   position: absolute;
-  left: -500px;
+  left: 0;
   bottom: 0;
-  animation: slideIn 1s ease-out 0.4s forwards; /* 0.4s delay */
+  width: min(500px, 50vw);
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  transform: translateX(-100%);
+  animation: slideIn 1s ease-out 0.4s forwards;
 }
 
-/* Keyframes for sliding in from left */
 @keyframes slideIn {
   0% {
-    left: -500px; /* start offscreen */
+    transform: translateX(-100%);
   }
   100% {
-    left: 0; /* final position inside container */
+    transform: translateX(0);
   }
 }
 
+/* Panel Image - Responsive */
 .panel-image-panel {
   display: block;
   position: absolute;
@@ -288,29 +286,33 @@ body {
 .panel-image {
   position: absolute;
   right: 0;
-  bottom: -750px;
-  animation: slideUp 1s ease-out 0.2s forwards; /* 0.4s delay */
+  bottom: 0;
+  width: min(500px, 50vw);
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  transform: translateY(100%);
+  animation: slideUp 1s ease-out 0.2s forwards;
 }
 
-/* Keyframes for sliding in from left */
 @keyframes slideUp {
   0% {
-    bottom: -750px; /* start offscreen */
+    transform: translateY(100%);
   }
   100% {
-    bottom: 0; /* final position inside container */
+    transform: translateY(0);
   }
 }
 
-/* Flag Widget */
-
+/* Flag Widget - Responsive */
 .i18n-widget {
   position: absolute;
-  right: 10px;
-  top: 5px;
+  right: clamp(5px, 2vw, 10px);
+  top: clamp(3px, 1vh, 5px);
   cursor: pointer;
   display: inline-block;
-  z-index: 1001;
+  z-index: 1004;
+  font-size: clamp(20px, 4vw, 24px);
 }
 
 .i18n-dropdown {
@@ -322,13 +324,90 @@ body {
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 1000;
+  margin-top: 4px;
 }
 
 .i18n-option {
-  padding: 8px 12px;
+  padding: clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px);
   cursor: pointer;
 }
 
 .i18n-option:hover {
   background: #f0f0f0;
+}
+
+/* Attribution Text - Responsive */
+#excalibur-play {
+  font-size: clamp(14px, 2.5vw, 18px);
+  padding: clamp(5px, 1vh, 10px);
+}
+
+#excalibur-play img {
+  width: clamp(16px, 3vw, 20px);
+  height: clamp(16px, 3vw, 20px);
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .start_button {
+    top: 80%;
+    width: 85vw;
+    height: 70px;
+  }
+
+  .start_button:active {
+    top: 82%;
+  }
+
+  .title {
+    width: 70vw;
+  }
+
+  .dude-image,
+  .panel-image {
+    width: 45vw;
+    max-height: 60vh;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .start_button {
+    height: 60px;
+    font-size: 20px;
+  }
+
+  .title-image {
+    top: 10px;
+  }
+
+  .dude-image,
+  .panel-image {
+    width: 40vw;
+    max-height: 50vh;
+  }
+
+  .loading-text {
+    font-size: 11px;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+  .start_button {
+    top: 75%;
+    height: 50px;
+    font-size: 18px;
+  }
+
+  .title-image {
+    top: 5px;
+    max-height: 25vh;
+  }
+
+  .dude-image,
+  .panel-image {
+    max-height: 50vh;
+    width: 30vw;
+  }
 }

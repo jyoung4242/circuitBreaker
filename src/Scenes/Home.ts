@@ -48,6 +48,6 @@ export class HomeScene extends Scene {
     this.add(new TitlePanel(vec(250 - 125, 5), vec(250, 80), vec(0.5, 0.5)));
     this.add(new EnergyMeter(vec(5, 10)));
     this.add(new TimerMeter(vec(5, 40), vec(100, 32)));
-    this.add(new CoinMeter(vec(425, 5), vec(100, 32)));
+    this.add(new CoinMeter(vec(425, 10), vec(100, 32)));
   }
 }
