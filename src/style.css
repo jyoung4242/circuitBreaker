@@ -200,8 +200,6 @@ body {
 /* Game Title Styling - Responsive */
 .title-image {
   position: absolute;
-  top: 0px;
-  left: 0;
   object-fit: contain;
   width: min(100%, 100vw);
   height: 100vh;
@@ -370,10 +368,6 @@ body {
   .start_button {
     height: 105px;
     font-size: 20px;
-  }
-
-  .title-image {
-    top: -90px;
   }
 
   .dude-image,

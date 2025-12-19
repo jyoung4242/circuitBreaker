@@ -140,7 +140,9 @@ export class NewLoader extends DefaultLoader {
     titleFlex.style.display = "flex";
     titleFlex.style.flexDirection = "column";
     titleFlex.style.alignItems = "center";
-    titleFlex.style.justifyContent = "center";
+    titleFlex.style.justifyContent = "flex-start";
+    titleFlex.style.width = "100%";
+    titleFlex.style.height = "100%";
     this._titleFlex = titleFlex;
     flexContainer.appendChild(titleFlex);
   }
@@ -186,6 +188,31 @@ export class NewLoader extends DefaultLoader {
     return titleImage;
   }
 
+  private _createAttributeText(titleRootDiv: HTMLDivElement) {
+    const extitle = document.createElement("div");
+    extitle.style.position = "absolute";
+    extitle.style.width = "100%";
+    extitle.style.height = "auto";
+    extitle.style.textAlign = "center";
+    extitle.style.display = "block";
+    extitle.style.fontFamily = "BagelFat";
+    extitle.style.fontSize = "18px";
+    extitle.style.zIndex = "1001";
+    // extitle.innerText = this._locale.t("loader.attribution");
+    extitle.innerText = "Created with ExcaliburJS";
+    titleRootDiv.appendChild(extitle);
+
+    const exIcon = document.createElement("img");
+    exIcon.src = "./ex-logo.png";
+    exIcon.style.position = "relative";
+    exIcon.style.width = "20px";
+    exIcon.style.height = "20px";
+    exIcon.style.top = "4px";
+    exIcon.style.left = "4px";
+    extitle.appendChild(exIcon);
+    return extitle;
+  }
+
   //  ***************  CLEANUP  *************** //
   dispose() {
     this._gameRootDiv.remove();
@@ -213,6 +240,7 @@ export class NewLoader extends DefaultLoader {
 
   private _showAllUI = () => {
     this._playbutton!.style.visibility = "visible";
-    this._titleImage = this._createTitleImage(this._titleFlex);
+    this._createAttributeText(this._titleFlex as HTMLDivElement);
+    this._titleImage = this._createTitleImage(this._titleFlex as HTMLDivElement);
   };
 }
