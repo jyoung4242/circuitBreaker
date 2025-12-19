@@ -386,3 +386,11 @@ body {
     font-size: 11px;
   }
 }
+
+.padTop10 {
+  padding-top: 10px;
+}
+
+.padBottom10 {
+  padding-bottom: 10px;
+}

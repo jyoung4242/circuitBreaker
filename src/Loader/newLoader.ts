@@ -8,6 +8,8 @@ export class NewLoader extends DefaultLoader {
   progressBarOpacity: number = 1.0;
   isShowingStartingState: boolean = true;
 
+  _titleFlex: HTMLDivElement | undefined;
+  _UIFlex: HTMLDivElement | undefined;
   _playbutton: HTMLButtonElement | undefined;
   _titleImage: HTMLImageElement | undefined;
   public screen: Screen | undefined = undefined;
@@ -46,6 +48,7 @@ export class NewLoader extends DefaultLoader {
       rootDiv.style.position = "absolute";
       rootDiv.style.zIndex = "1000";
       rootDiv.style.background = `radial-gradient(circle,${this._backgroundColor1} 17%, ${this._backgroundColor2} 100%)`;
+      this._UIFlex = this._createFlexUIContainer(rootDiv);
     }
 
     if (this.engine) {
@@ -63,7 +66,8 @@ export class NewLoader extends DefaultLoader {
     this._playbutton.style.visibility = "hidden";
     this._playbutton.classList.add("start_button");
     await Util.delay(200, this.engine?.clock);
-    this._gameRootDiv.appendChild(this._playbutton);
+    // this._gameRootDiv.appendChild(this._playbutton);
+    this._UIFlex?.appendChild(this._playbutton);
 
     let playButtonClicked: Promise<void> = new Promise<void>(resolve => {
       if (!this._playbutton) return;
@@ -112,6 +116,35 @@ export class NewLoader extends DefaultLoader {
 
   //  ***************  DOM ELEMENT CREATION  *************** //
 
+  private _createFlexUIContainer(rootDiv: HTMLDivElement): HTMLDivElement {
+    let flexContainer = document.createElement("div");
+
+    flexContainer.id = "flex-container";
+    flexContainer.classList.add("padTop10");
+    flexContainer.classList.add("padBottom10");
+    flexContainer.style.height = "100%";
+    flexContainer.style.width = "100%";
+    flexContainer.style.display = "flex";
+    flexContainer.style.alignItems = "space-between";
+    flexContainer.style.justifyContent = "center";
+    flexContainer.style.flexDirection = "column";
+
+    this._createTitleFlex(flexContainer);
+
+    rootDiv.appendChild(flexContainer);
+    return flexContainer;
+  }
+
+  private _createTitleFlex(flexContainer: HTMLDivElement) {
+    let titleFlex = document.createElement("div");
+    titleFlex.style.display = "flex";
+    titleFlex.style.flexDirection = "column";
+    titleFlex.style.alignItems = "center";
+    titleFlex.style.justifyContent = "center";
+    this._titleFlex = titleFlex;
+    flexContainer.appendChild(titleFlex);
+  }
+
   private _createPlayButton(): HTMLButtonElement {
     const playButton = document.createElement("button");
     playButton.classList.add("play-button");
@@ -144,12 +177,12 @@ export class NewLoader extends DefaultLoader {
     return loadingContainer;
   }
 
-  private _createTitleImage(rootDiv: HTMLDivElement): HTMLImageElement {
+  private _createTitleImage(titleRootDiv: HTMLDivElement): HTMLImageElement {
     const titleImage = document.createElement("img");
     titleImage.id = "title-image";
     titleImage.classList.add("title-image");
     titleImage.src = "./src/Assets/Title.png";
-    rootDiv.appendChild(titleImage);
+    titleRootDiv.appendChild(titleImage);
     return titleImage;
   }
 
@@ -180,6 +213,6 @@ export class NewLoader extends DefaultLoader {
 
   private _showAllUI = () => {
     this._playbutton!.style.visibility = "visible";
-    this._titleImage = this._createTitleImage(this._gameRootDiv);
+    this._titleImage = this._createTitleImage(this._titleFlex);
   };
 }
