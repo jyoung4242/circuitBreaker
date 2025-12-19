@@ -12,8 +12,6 @@ export class CustomLoader extends DefaultLoader {
   progressBarOpacity: number = 1.0;
   isShowingStartingState: boolean = true;
 
-  public backgroundColor: string = "#222222";
-  public loadingBarColor: Color = Color.fromHex("#FFFFFFFF");
   public screen: Screen | undefined = undefined;
   private static _DEFAULT_LOADER_OPTIONS: LoaderOptions = {
     loadables: [],
@@ -22,15 +20,15 @@ export class CustomLoader extends DefaultLoader {
   };
 
   //DOM Elements
-  _playbutton: HTMLButtonElement;
-  _gameTitleDiv: HTMLDivElement | undefined;
-  _gameAttributeDiv: HTMLDivElement;
+  _playbutton: HTMLButtonElement | undefined;
+  // _gameTitleDiv: HTMLDivElement | undefined;
+  // _gameAttributeDiv: HTMLDivElement | undefined;
   _gameRootDiv: HTMLDivElement = document.createElement("div");
   _backgroundDiv: HTMLDivElement;
   _loadingBarDiv: HTMLDivElement;
-  _dudeImageDiv: HTMLDivElement | undefined;
-  _panelImageDiv: HTMLDivElement | undefined;
-  _i18nWidgetDiv: HTMLDivElement | undefined;
+  // _dudeImageDiv: HTMLDivElement | undefined;
+  // _panelImageDiv: HTMLDivElement | undefined;
+  // _i18nWidgetDiv: HTMLDivElement | undefined;
 
   _locale: I18n;
 
@@ -40,8 +38,7 @@ export class CustomLoader extends DefaultLoader {
     //add all dom elements here
     this._positionAndSizeRoot(this._gameRootDiv);
     this._backgroundDiv = this._createBackground(this._gameRootDiv);
-    this._playbutton = this._createPlayButton();
-    this._gameAttributeDiv = this._createExcaliburAttribute();
+
     this._loadingBarDiv = this._createLoadingBar(this._gameRootDiv);
 
     //localization
@@ -61,7 +58,6 @@ export class CustomLoader extends DefaultLoader {
     }
     this._positionAndSizeRoot(this._gameRootDiv);
     this.isLocalizationInitialized = true;
-    this.updateLocaleText("us");
   }
 
   public override onDraw(ctx: CanvasRenderingContext2D) {
@@ -82,7 +78,7 @@ export class CustomLoader extends DefaultLoader {
     await Util.delay(200, this.engine?.clock);
     this.canvas.flagDirty();
     // show play button
-    await this._showPlayButton();
+    // await this._showPlayButton();
   }
 
   //***********************  */
@@ -123,12 +119,15 @@ export class CustomLoader extends DefaultLoader {
   }
 
   async _showPlayButton(): Promise<void> {
+    if (!this._playbutton) this._playbutton = this._createPlayButton();
     this._playbutton.style.display = "block";
     await Util.delay(200, this.engine?.clock);
     this._gameRootDiv.appendChild(this._playbutton);
 
     let playButtonClicked: Promise<void> = new Promise<void>(resolve => {
+      if (!this._playbutton) return;
       const startButtonHandler = (e: Event) => {
+        if (!this._playbutton) return;
         // We want to stop propagation to keep bubbling to the engine pointer handlers
         e.stopPropagation();
         e.preventDefault();
@@ -154,24 +153,19 @@ export class CustomLoader extends DefaultLoader {
     return button;
   }
 
-  _createGameTitle(rootDiv: HTMLDivElement): HTMLDivElement {
-    const title = document.createElement("div");
+  _createGameTitle(rootDiv: HTMLDivElement): HTMLElement {
     const titleImage = document.createElement("img");
 
-    title.id = "title-div";
     titleImage.id = "title-image";
 
-    title.classList.add("title");
-    title.classList.add("hidden");
     titleImage.classList.add("title-image");
 
-    titleImage.width = 500;
-    titleImage.height = 750;
+    // titleImage.width = 500;
+    // titleImage.height = 750;
     titleImage.src = "./src/Assets/Title.png";
-    title.appendChild(titleImage);
 
-    rootDiv.appendChild(title);
-    return title;
+    rootDiv.appendChild(titleImage);
+    return titleImage;
   }
 
   _createExcaliburAttribute(): HTMLDivElement {
@@ -221,15 +215,7 @@ export class CustomLoader extends DefaultLoader {
 
   _createBackground(rootDiv: HTMLDivElement): HTMLDivElement {
     const bg = document.createElement("div");
-    bg.style.position = "absolute";
-    bg.style.width = "100%";
-    bg.style.height = "100%";
-    bg.style.top = "0px";
-    bg.style.left = "0px";
-    bg.style.background = `radial-gradient(circle,
-    hsla(235, 35%, 29%, 1) 17%,
-    hsla(231, 56%, 14%, 1) 100%)`;
-    bg.style.zIndex = "1000";
+    bg.id = "backgroundDiv";
     rootDiv.appendChild(bg);
     return bg;
   }
@@ -373,12 +359,16 @@ export class CustomLoader extends DefaultLoader {
     const bar = document.getElementById("loading-container");
     const startButton = document.getElementById("excalibur-play");
     bar?.classList.add("is-complete");
-    startButton?.classList.remove("hidden");
+    this._gameRootDiv.removeChild(this._loadingBarDiv);
+    // startButton?.classList.remove("hidden");
     this._createGameTitle(this._gameRootDiv);
-    this._dudeImageDiv = this._createDudeImagePanel(this._gameRootDiv);
-    this._panelImageDiv = this._createPanelImagePanel(this._gameRootDiv);
-    this._i18nWidgetDiv = this._createi18nWidget(this._gameRootDiv);
+    // this._dudeImageDiv = this._createDudeImagePanel(this._gameRootDiv);
+    // this._panelImageDiv = this._createPanelImagePanel(this._gameRootDiv);
+    // this._i18nWidgetDiv = this._createi18nWidget(this._gameRootDiv);
+    // this._playbutton = this._createPlayButton();
+    this._gameAttributeDiv = this._createExcaliburAttribute();
     this.isShowingStartingState = false;
+    this.updateLocaleText("us");
   };
 
   updateLocaleText(code: string) {
@@ -387,8 +377,8 @@ export class CustomLoader extends DefaultLoader {
 
     this._locale.setLocale(code);
 
-    button.innerText = this._locale.t("loader.button");
-    attribute.innerText = this._locale.t("loader.attribution");
+    if (button) button.innerText = this._locale.t("loader.button");
+    if (attribute) attribute.innerText = this._locale.t("loader.attribution");
 
     const exIcon = document.createElement("img");
     exIcon.src = "./ex-logo.png";
@@ -397,7 +387,7 @@ export class CustomLoader extends DefaultLoader {
     exIcon.style.height = "20px";
     exIcon.style.top = "4px";
     exIcon.style.left = "4px";
-    attribute.appendChild(exIcon);
+    if (attribute) attribute.appendChild(exIcon);
   }
 }
 

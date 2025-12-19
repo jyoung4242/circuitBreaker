@@ -60,6 +60,17 @@ body {
   }
 }
 
+/*Background Div */
+#backgroundDiv {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0px;
+  left: 0px;
+  background: radial-gradient(circle, hsla(235, 35%, 29%, 1) 17%, hsla(231, 56%, 14%, 1) 100%);
+  z-index: 1000;
+}
+
 /* startbutton styling - Now Responsive */
 .start_button {
   position: absolute;
@@ -150,7 +161,7 @@ body {
   text-align: center;
   display: block;
   opacity: 1;
-  transition: opacity 0.6s ease;
+  transition: opacity 1.5s ease;
 }
 
 .loading-wrapper {
@@ -187,48 +198,36 @@ body {
 }
 
 /* Game Title Styling - Responsive */
-.title {
-  display: block;
-  position: absolute;
-  top: clamp(5px, 2vh, 10px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(500px, 80vw);
-  height: auto;
-  justify-content: center;
-  align-items: center;
-  z-index: 1003;
-  pointer-events: none;
-}
-
 .title-image {
   position: absolute;
-  top: clamp(15px, 4vh, 30px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  height: auto;
-  max-width: 500px;
-  animation: titleBounce 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  top: 0px;
+  left: 0;
+  object-fit: contain;
+  width: min(500px, 100vw);
+  height: 100vh;
+  z-index: 1003;
+  pointer-events: none;
+  transform-origin: center top;
+  animation: titleBounce 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 @keyframes titleBounce {
   0% {
-    transform: translateX(-50%) scale(0);
+    transform: scale(0);
     opacity: 0;
   }
   40% {
-    transform: translateX(-50%) scale(1.1);
+    transform: scale(1.1);
     opacity: 1;
   }
   70% {
-    transform: translateX(-50%) scale(0.96);
+    transform: scale(0.96);
   }
   85% {
-    transform: translateX(-50%) scale(1.03);
+    transform: scale(1.03);
   }
   100% {
-    transform: translateX(-50%) scale(1);
+    transform: scale(1);
   }
 }
 
@@ -352,15 +351,11 @@ body {
   .start_button {
     top: 80%;
     width: 85vw;
-    height: 70px;
+    height: 120px;
   }
 
   .start_button:active {
     top: 82%;
-  }
-
-  .title {
-    width: 70vw;
   }
 
   .dude-image,
@@ -373,12 +368,8 @@ body {
 /* Small mobile devices */
 @media (max-width: 480px) {
   .start_button {
-    height: 60px;
+    height: 120px;
     font-size: 20px;
-  }
-
-  .title-image {
-    top: 10px;
   }
 
   .dude-image,
@@ -387,27 +378,11 @@ body {
     max-height: 50vh;
   }
 
+  .title-image {
+    top: -100px;
+  }
+
   .loading-text {
     font-size: 11px;
-  }
-}
-
-/* Landscape orientation on mobile */
-@media (max-height: 600px) and (orientation: landscape) {
-  .start_button {
-    top: 75%;
-    height: 50px;
-    font-size: 18px;
-  }
-
-  .title-image {
-    top: 5px;
-    max-height: 25vh;
-  }
-
-  .dude-image,
-  .panel-image {
-    max-height: 50vh;
-    width: 30vw;
   }
 }
