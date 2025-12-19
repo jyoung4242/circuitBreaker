@@ -9,6 +9,7 @@ export class NewLoader extends DefaultLoader {
   isShowingStartingState: boolean = true;
 
   _playbutton: HTMLButtonElement | undefined;
+  _titleImage: HTMLImageElement | undefined;
   public screen: Screen | undefined = undefined;
   _gameRootDiv: HTMLDivElement = document.createElement("div");
   _progressBarDiv: HTMLDivElement = document.createElement("div");
@@ -143,6 +144,15 @@ export class NewLoader extends DefaultLoader {
     return loadingContainer;
   }
 
+  private _createTitleImage(rootDiv: HTMLDivElement): HTMLImageElement {
+    const titleImage = document.createElement("img");
+    titleImage.id = "title-image";
+    titleImage.classList.add("title-image");
+    titleImage.src = "./src/Assets/Title.png";
+    rootDiv.appendChild(titleImage);
+    return titleImage;
+  }
+
   //  ***************  CLEANUP  *************** //
   dispose() {
     this._gameRootDiv.remove();
@@ -170,5 +180,6 @@ export class NewLoader extends DefaultLoader {
 
   private _showAllUI = () => {
     this._playbutton!.style.visibility = "visible";
+    this._titleImage = this._createTitleImage(this._gameRootDiv);
   };
 }
