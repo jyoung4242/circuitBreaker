@@ -351,7 +351,7 @@ body {
   .start_button {
     top: 80%;
     width: 85vw;
-    height: 120px;
+    height: 110px;
   }
 
   .start_button:active {
@@ -368,7 +368,7 @@ body {
 /* Small mobile devices */
 @media (max-width: 480px) {
   .start_button {
-    height: 120px;
+    height: 105px;
     font-size: 20px;
   }
 
