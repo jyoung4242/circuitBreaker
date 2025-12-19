@@ -372,14 +372,14 @@ body {
     font-size: 20px;
   }
 
+  .title-image {
+    top: -90px;
+  }
+
   .dude-image,
   .panel-image {
     width: 40vw;
     max-height: 50vh;
-  }
-
-  .title-image {
-    top: -100px;
   }
 
   .loading-text {
