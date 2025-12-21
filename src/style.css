@@ -199,9 +199,10 @@ body {
 
 /* Game Title Styling - Responsive */
 .title-image {
-  width: 413px;
-  height: 194px;
+  width: 90%;
+  height: auto;
   z-index: 1003;
+
   pointer-events: none;
   animation: titleBounce 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
