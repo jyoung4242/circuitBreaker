@@ -20,15 +20,46 @@ import { HomeScene } from "./Scenes/Home";
 import { GameScene } from "./Scenes/Game";
 
 await UI.create(document.body, model, template).attached;
+// In your main.ts or wherever you register the SW
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js").then(reg => {
-    console.log("SW registered");
-  });
+  navigator.serviceWorker
+    .register("/sw.js")
+    .then(reg => {
+      alert("SW registered!");
 
-  // Just reload manually the first time
-  if (!navigator.serviceWorker.controller) {
-    console.log("No controller - refresh the page once manually");
-  }
+      // Wait for SW to be ready
+      navigator.serviceWorker.ready.then(async () => {
+        alert("SW is ready");
+
+        // Check if we have a controller
+        if (!navigator.serviceWorker.controller) {
+          alert("No controller - will work after refresh");
+          return;
+        }
+
+        // Try to get version
+        const messageChannel = new MessageChannel();
+
+        messageChannel.port1.onmessage = event => {
+          if (event.data && event.data.version) {
+            alert("SW Version: " + event.data.version);
+          } else {
+            alert("Got message but no version: " + JSON.stringify(event.data));
+          }
+        };
+
+        // Send message
+        navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" }, [messageChannel.port2]);
+
+        // Timeout
+        setTimeout(() => {
+          alert("Version fetch timed out - no response from SW");
+        }, 3000);
+      });
+    })
+    .catch(err => {
+      alert("SW registration failed: " + err.message);
+    });
 }
 
 const game = new Engine({
