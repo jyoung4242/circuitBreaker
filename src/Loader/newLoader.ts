@@ -1,5 +1,6 @@
 import { DefaultLoader, Engine, LoaderOptions, Screen, Util } from "excalibur";
 import { I18n } from "../Lib/I18n";
+// import { CACHE_VERSION } from "../../sw";
 
 export class NewLoader extends DefaultLoader {
   _backgroundColor1: string = ` hsla(235, 35%, 29%, 1)`;
@@ -8,6 +9,7 @@ export class NewLoader extends DefaultLoader {
   progressBarOpacity: number = 1.0;
   isShowingStartingState: boolean = true;
   _locale: I18n;
+  version: string = "";
 
   _titleFlex: HTMLDivElement | undefined;
   _UIFlex: HTMLDivElement | undefined;
@@ -33,6 +35,7 @@ export class NewLoader extends DefaultLoader {
     this._positionAndSizeRoot(this._gameRootDiv);
     this._createProgressBar(this._gameRootDiv);
     this._locale = i18n;
+    getAppVersion().then(version => (this.version = version ?? ""));
   }
 
   override async onUserAction(): Promise<void> {
@@ -193,6 +196,18 @@ export class NewLoader extends DefaultLoader {
     return titleImage;
   }
 
+  private _createVersionText(rootDiv: HTMLDivElement): HTMLDivElement {
+    const versionText = document.createElement("div");
+    versionText.id = "version-text";
+    versionText.textContent = "Version: " + this.version;
+    versionText.style.position = "fixed";
+    versionText.style.bottom = "5px";
+    versionText.style.left = "2px";
+
+    rootDiv.appendChild(versionText);
+    return versionText;
+  }
+
   private _createI18nWidget(rootDiv: HTMLDivElement): HTMLDivElement {
     const widget = document.createElement("div");
     widget.id = "i18n-widget";
@@ -332,6 +347,24 @@ export class NewLoader extends DefaultLoader {
     this._playbutton!.style.visibility = "visible";
     this._attributionDiv = this._createAttributeText(this._titleFlex as HTMLDivElement);
     this._titleImage = this._createTitleImage(this._titleFlex as HTMLDivElement);
-    this._i18nWidgetDiv = this._createI18nWidget(this._titleFlex as HTMLDivElement);
+    this._i18nWidgetDiv = this._createI18nWidget(this._gameRootDiv);
+    this._createVersionText(this._gameRootDiv);
   };
+}
+
+export function getAppVersion(): Promise<string | null> {
+  return new Promise(resolve => {
+    if (!navigator.serviceWorker?.controller) {
+      resolve(null);
+      return;
+    }
+
+    const channel = new MessageChannel();
+
+    channel.port1.onmessage = event => {
+      resolve(event.data?.version ?? null);
+    };
+
+    navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" }, [channel.port2]);
+  });
 }

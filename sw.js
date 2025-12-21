@@ -4,7 +4,7 @@
 
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js");
 
-export const CACHE_VERSION = "v1.1";
+const CACHE_VERSION = "v1.1";
 
 /* Cache Names */
 const OFFLINE_CACHE = `offline-${CACHE_VERSION}`;
@@ -25,6 +25,11 @@ workbox.setConfig({ debug: false });
 self.addEventListener("message", event => {
   if (event.data?.type === "SKIP_WAITING") {
     self.skipWaiting();
+  }
+  if (event.data?.type === "GET_VERSION") {
+    event.ports[0]?.postMessage({
+      version: CACHE_VERSION,
+    });
   }
 });
 
