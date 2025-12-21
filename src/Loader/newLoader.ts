@@ -7,11 +7,14 @@ export class NewLoader extends DefaultLoader {
   fadeProgressBar: boolean = false;
   progressBarOpacity: number = 1.0;
   isShowingStartingState: boolean = true;
+  _locale: I18n;
 
   _titleFlex: HTMLDivElement | undefined;
   _UIFlex: HTMLDivElement | undefined;
   _playbutton: HTMLButtonElement | undefined;
   _titleImage: HTMLImageElement | undefined;
+  _i18nWidgetDiv: HTMLDivElement | undefined;
+  _attributionDiv: HTMLDivElement | undefined;
   public screen: Screen | undefined = undefined;
   _gameRootDiv: HTMLDivElement = document.createElement("div");
   _progressBarDiv: HTMLDivElement = document.createElement("div");
@@ -29,6 +32,7 @@ export class NewLoader extends DefaultLoader {
     this.i18n = i18n;
     this._positionAndSizeRoot(this._gameRootDiv);
     this._createProgressBar(this._gameRootDiv);
+    this._locale = i18n;
   }
 
   override async onUserAction(): Promise<void> {
@@ -189,6 +193,73 @@ export class NewLoader extends DefaultLoader {
     return titleImage;
   }
 
+  private _createI18nWidget(rootDiv: HTMLDivElement): HTMLDivElement {
+    const widget = document.createElement("div");
+    widget.id = "i18n-widget";
+    widget.classList.add("i18n-widget");
+    widget.setAttribute("role", "listbox");
+    widget.setAttribute("aria-label", "Select language");
+    widget.tabIndex = 0;
+
+    // Define supported locales with ISO 3166-1-alpha-2 codes
+    const locales = [
+      { code: "en-US", country: "us" },
+      { code: "es-ES", country: "es" },
+      { code: "fr-FR", country: "fr" },
+      { code: "de-DE", country: "de" },
+      //   { code: "ja-JP", country: "jp" },
+    ];
+
+    // Current selected flag
+    const selectedFlag = document.createElement("span");
+    selectedFlag.classList.add("fi", "fi-us"); // default
+    widget.appendChild(selectedFlag);
+
+    // Dropdown container
+    const dropdown = document.createElement("div");
+    dropdown.classList.add("i18n-dropdown");
+    dropdown.style.display = "none";
+
+    locales.forEach(locale => {
+      const option = document.createElement("div");
+      option.classList.add("i18n-option");
+      option.dataset.locale = locale.code;
+      option.setAttribute("role", "option");
+
+      const flag = document.createElement("span");
+      flag.classList.add("fi", `fi-${locale.country}`);
+      option.appendChild(flag);
+
+      option.addEventListener("click", () => {
+        selectedFlag.className = `fi fi-${locale.country}`;
+        dropdown.style.display = "none";
+        // change language here
+        this._updateLocaleText(locale.country);
+      });
+
+      dropdown.appendChild(option);
+    });
+
+    widget.appendChild(dropdown);
+
+    // Toggle dropdown
+    widget.addEventListener("click", e => {
+      if (e.target === widget || e.target === selectedFlag) {
+        dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+      }
+    });
+
+    // Close on outside click
+    document.addEventListener("click", e => {
+      if (!widget.contains(e.target as Node)) {
+        dropdown.style.display = "none";
+      }
+    });
+
+    rootDiv.appendChild(widget);
+    return widget;
+  }
+
   private _createAttributeText(titleRootDiv: HTMLDivElement) {
     const extitle = document.createElement("div");
     extitle.style.width = "100%";
@@ -198,7 +269,7 @@ export class NewLoader extends DefaultLoader {
     extitle.style.fontFamily = "BagelFat";
     extitle.style.fontSize = "18px";
     extitle.style.zIndex = "1001";
-    // extitle.innerText = this._locale.t("loader.attribution");
+    extitle.innerText = this._locale.t("loader.attribution");
     extitle.innerText = "Created with ExcaliburJS";
     titleRootDiv.appendChild(extitle);
 
@@ -220,6 +291,25 @@ export class NewLoader extends DefaultLoader {
 
   //  ***************  UI utilities  *************** //
 
+  private _updateLocaleText(code: string) {
+    let button = this._playbutton;
+    let attribute = this._attributionDiv;
+
+    this._locale.setLocale(code);
+
+    if (button) button.innerText = this._locale.t("loader.button");
+    if (attribute) attribute.innerText = this._locale.t("loader.attribution");
+
+    const exIcon = document.createElement("img");
+    exIcon.src = "./ex-logo.png";
+    exIcon.style.position = "relative";
+    exIcon.style.width = "20px";
+    exIcon.style.height = "20px";
+    exIcon.style.top = "4px";
+    exIcon.style.left = "4px";
+    if (attribute) attribute.appendChild(exIcon);
+  }
+
   private _setProgress(value: number) {
     const bar = document.getElementById("loading-bar");
     const label = document.getElementById("loading-text");
@@ -240,7 +330,8 @@ export class NewLoader extends DefaultLoader {
 
   private _showAllUI = () => {
     this._playbutton!.style.visibility = "visible";
-    this._createAttributeText(this._titleFlex as HTMLDivElement);
+    this._attributionDiv = this._createAttributeText(this._titleFlex as HTMLDivElement);
     this._titleImage = this._createTitleImage(this._titleFlex as HTMLDivElement);
+    this._i18nWidgetDiv = this._createI18nWidget(this._titleFlex as HTMLDivElement);
   };
 }
