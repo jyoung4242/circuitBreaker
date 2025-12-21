@@ -4,15 +4,12 @@
 
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js");
 
-const CACHE_VERSION = "v1.3";
+const CACHE_VERSION = "v1.4";
 
 /* Cache Names */
-const OFFLINE_CACHE = `offline-${CACHE_VERSION}`;
 const STATIC_CACHE = `static-${CACHE_VERSION}`;
 const IMAGE_CACHE = `images-${CACHE_VERSION}`;
 const AUDIO_CACHE = `audio-${CACHE_VERSION}`;
-
-const OFFLINE_FALLBACK_PAGE = "/offline.html";
 
 /* ===============================
    Workbox Setup
@@ -20,8 +17,8 @@ const OFFLINE_FALLBACK_PAGE = "/offline.html";
 workbox.setConfig({ debug: false });
 
 // These make the SW take control immediately
-// workbox.core.clientsClaim();
-// workbox.core.skipWaiting();
+workbox.core.clientsClaim();
+workbox.core.skipWaiting();
 
 /* ===============================
    Skip Waiting Support
@@ -29,7 +26,7 @@ workbox.setConfig({ debug: false });
 self.addEventListener("message", event => {
   if (event.data?.type === "SKIP_WAITING") {
     self.skipWaiting();
-    // self.clients.claim();
+    self.clients.claim();
   }
 
   if (event.data?.type === "GET_VERSION") {
@@ -37,13 +34,6 @@ self.addEventListener("message", event => {
       version: CACHE_VERSION,
     });
   }
-});
-
-/* ===============================
-   Install
-================================ */
-self.addEventListener("install", event => {
-  event.waitUntil(caches.open(OFFLINE_CACHE).then(cache => cache.add(OFFLINE_FALLBACK_PAGE)));
 });
 
 /* ===============================
@@ -56,12 +46,9 @@ self.addEventListener("activate", event => {
       // Clean up old caches
       const keys = await caches.keys();
       await Promise.all(keys.filter(key => !key.includes(CACHE_VERSION)).map(key => caches.delete(key)));
-      console.log("Old caches cleaned, claiming clients");
+      console.log("Old caches cleaned up");
     })()
   );
-
-  // Claim clients synchronously
-  return self.clients.claim();
 });
 
 /* ===============================
@@ -127,20 +114,32 @@ workbox.routing.registerRoute(
 );
 
 /* ===============================
-   Navigation Offline Fallback
+   Navigation Caching - Network First with Cache Fallback
 ================================ */
 self.addEventListener("fetch", event => {
   if (event.request.mode === "navigate") {
     event.respondWith(
       (async () => {
         try {
+          // Try network first with preload
           const preloadResp = await event.preloadResponse;
           if (preloadResp) return preloadResp;
 
           return await fetch(event.request);
         } catch (err) {
-          const cache = await caches.open(OFFLINE_CACHE);
-          return await cache.match(OFFLINE_FALLBACK_PAGE);
+          // If offline, serve cached version of the page
+          const cache = await caches.open(workbox.core.cacheNames.precache);
+          const cachedResponse = await cache.match("/index.html");
+          if (cachedResponse) return cachedResponse;
+
+          // Ultimate fallback
+          return new Response("Game is offline. Please check your connection.", {
+            status: 503,
+            statusText: "Service Unavailable",
+            headers: new Headers({
+              "Content-Type": "text/html",
+            }),
+          });
         }
       })()
     );
