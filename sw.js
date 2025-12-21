@@ -4,7 +4,7 @@
 
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js");
 
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v1.1";
 
 /* Cache Names */
 const OFFLINE_CACHE = `offline-${CACHE_VERSION}`;

@@ -21,6 +21,10 @@ import { GameScene } from "./Scenes/Game";
 
 await UI.create(document.body, model, template).attached;
 
+navigator.serviceWorker.addEventListener("controllerchange", () => {
+  window.location.reload();
+});
+
 const game = new Engine({
   width: 500, // the width of the canvas
   height: 750, // the height of the canvas
