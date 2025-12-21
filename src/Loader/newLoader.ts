@@ -308,7 +308,7 @@ export class NewLoader extends DefaultLoader {
 
   initVersion() {
     if (!("serviceWorker" in navigator)) return;
-
+    window.alert("found service worker, now fetching version");
     // Already controlling
     if (navigator.serviceWorker.controller) {
       this._fetchVersion();
