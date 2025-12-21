@@ -31,6 +31,7 @@ export const Resources = {
 };
 
 export const loader = new NewLoader(i18n);
+await loader.initVersion();
 
 for (let res of Object.values(Resources)) {
   loader.addResource(res);

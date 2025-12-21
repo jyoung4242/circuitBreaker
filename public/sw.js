@@ -4,7 +4,7 @@
 
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js");
 
-const CACHE_VERSION = "v1.1";
+const CACHE_VERSION = "v1.3";
 
 /* Cache Names */
 const OFFLINE_CACHE = `offline-${CACHE_VERSION}`;
@@ -19,13 +19,19 @@ const OFFLINE_FALLBACK_PAGE = "/offline.html";
 ================================ */
 workbox.setConfig({ debug: false });
 
+// These make the SW take control immediately
+// workbox.core.clientsClaim();
+// workbox.core.skipWaiting();
+
 /* ===============================
    Skip Waiting Support
 ================================ */
 self.addEventListener("message", event => {
   if (event.data?.type === "SKIP_WAITING") {
     self.skipWaiting();
+    // self.clients.claim();
   }
+
   if (event.data?.type === "GET_VERSION") {
     event.ports[0]?.postMessage({
       version: CACHE_VERSION,
@@ -41,7 +47,8 @@ self.addEventListener("install", event => {
 });
 
 /* ===============================
-   Activate
+   Activate - Cache Cleanup Only
+   (Workbox handles clients.claim via clientsClaim() above)
 ================================ */
 self.addEventListener("activate", event => {
   event.waitUntil(
@@ -49,11 +56,12 @@ self.addEventListener("activate", event => {
       // Clean up old caches
       const keys = await caches.keys();
       await Promise.all(keys.filter(key => !key.includes(CACHE_VERSION)).map(key => caches.delete(key)));
-
-      // Take control immediately
-      await self.clients.claim();
+      console.log("Old caches cleaned, claiming clients");
     })()
   );
+
+  // Claim clients synchronously
+  return self.clients.claim();
 });
 
 /* ===============================

@@ -20,10 +20,16 @@ import { HomeScene } from "./Scenes/Home";
 import { GameScene } from "./Scenes/Game";
 
 await UI.create(document.body, model, template).attached;
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js").then(reg => {
+    console.log("SW registered");
+  });
 
-navigator.serviceWorker.addEventListener("controllerchange", () => {
-  window.location.reload();
-});
+  // Just reload manually the first time
+  if (!navigator.serviceWorker.controller) {
+    console.log("No controller - refresh the page once manually");
+  }
+}
 
 const game = new Engine({
   width: 500, // the width of the canvas

@@ -17,6 +17,7 @@ export class NewLoader extends DefaultLoader {
   _titleImage: HTMLImageElement | undefined;
   _i18nWidgetDiv: HTMLDivElement | undefined;
   _attributionDiv: HTMLDivElement | undefined;
+  _versionTextDiv: HTMLDivElement | undefined;
   public screen: Screen | undefined = undefined;
   _gameRootDiv: HTMLDivElement = document.createElement("div");
   _progressBarDiv: HTMLDivElement = document.createElement("div");
@@ -35,7 +36,6 @@ export class NewLoader extends DefaultLoader {
     this._positionAndSizeRoot(this._gameRootDiv);
     this._createProgressBar(this._gameRootDiv);
     this._locale = i18n;
-    getAppVersion().then(version => (this.version = version ?? ""));
   }
 
   override async onUserAction(): Promise<void> {
@@ -306,6 +306,27 @@ export class NewLoader extends DefaultLoader {
 
   //  ***************  UI utilities  *************** //
 
+  initVersion() {
+    if (!("serviceWorker" in navigator)) return;
+
+    // Already controlling
+    if (navigator.serviceWorker.controller) {
+      this._fetchVersion();
+      return;
+    }
+
+    // Wait once for control
+    navigator.serviceWorker.addEventListener("controllerchange", () => this._fetchVersion(), { once: true });
+  }
+
+  private async _fetchVersion() {
+    console.log("version getting fetched");
+
+    const version = await getAppVersion();
+    this.version = version ?? "";
+    this._updateVersionText();
+  }
+
   private _updateLocaleText(code: string) {
     let button = this._playbutton;
     let attribute = this._attributionDiv;
@@ -323,6 +344,11 @@ export class NewLoader extends DefaultLoader {
     exIcon.style.top = "4px";
     exIcon.style.left = "4px";
     if (attribute) attribute.appendChild(exIcon);
+  }
+
+  private _updateVersionText() {
+    const versionText = this._versionTextDiv;
+    if (versionText) versionText.textContent = "Version: " + this.version;
   }
 
   private _setProgress(value: number) {
@@ -348,12 +374,14 @@ export class NewLoader extends DefaultLoader {
     this._attributionDiv = this._createAttributeText(this._titleFlex as HTMLDivElement);
     this._titleImage = this._createTitleImage(this._titleFlex as HTMLDivElement);
     this._i18nWidgetDiv = this._createI18nWidget(this._gameRootDiv);
-    this._createVersionText(this._gameRootDiv);
+    this._versionTextDiv = this._createVersionText(this._gameRootDiv);
   };
 }
 
 export function getAppVersion(): Promise<string | null> {
   return new Promise(resolve => {
+    console.log("here");
+
     if (!navigator.serviceWorker?.controller) {
       resolve(null);
       return;
@@ -366,5 +394,28 @@ export function getAppVersion(): Promise<string | null> {
     };
 
     navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" }, [channel.port2]);
+  });
+}
+async function getAppVersionSafe(): Promise<string | null> {
+  if (!("serviceWorker" in navigator)) return null;
+
+  // Wait until a service worker is ready
+  await navigator.serviceWorker.ready;
+
+  // If still no controller, force a reload ONCE
+  if (!navigator.serviceWorker.controller) {
+    console.warn("SW installed but not controlling yet, reload required");
+    window.location.reload();
+    return null;
+  }
+
+  return new Promise(resolve => {
+    const channel = new MessageChannel();
+
+    channel.port1.onmessage = event => {
+      resolve(event.data?.version ?? null);
+    };
+
+    navigator.serviceWorker.controller!.postMessage({ type: "GET_VERSION" }, [channel.port2]);
   });
 }
