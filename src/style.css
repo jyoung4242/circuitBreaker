@@ -199,13 +199,10 @@ body {
 
 /* Game Title Styling - Responsive */
 .title-image {
-  position: absolute;
-  object-fit: contain;
-  width: min(100%, 100vw);
-  height: 100vh;
+  width: 413px;
+  height: 194px;
   z-index: 1003;
   pointer-events: none;
-  transform-origin: center top;
   animation: titleBounce 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 

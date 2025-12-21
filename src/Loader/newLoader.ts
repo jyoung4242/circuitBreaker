@@ -32,8 +32,6 @@ export class NewLoader extends DefaultLoader {
   }
 
   override async onUserAction(): Promise<void> {
-    console.trace();
-
     await Util.delay(200, this.engine?.clock);
     this.canvas.flagDirty();
     // show play button
@@ -125,8 +123,8 @@ export class NewLoader extends DefaultLoader {
     flexContainer.style.height = "100%";
     flexContainer.style.width = "100%";
     flexContainer.style.display = "flex";
-    flexContainer.style.alignItems = "space-between";
-    flexContainer.style.justifyContent = "center";
+    flexContainer.style.alignItems = "center";
+    flexContainer.style.justifyContent = "space-between";
     flexContainer.style.flexDirection = "column";
 
     this._createTitleFlex(flexContainer);
@@ -137,12 +135,15 @@ export class NewLoader extends DefaultLoader {
 
   private _createTitleFlex(flexContainer: HTMLDivElement) {
     let titleFlex = document.createElement("div");
+    titleFlex.id = "title-flex";
     titleFlex.style.display = "flex";
     titleFlex.style.flexDirection = "column";
     titleFlex.style.alignItems = "center";
     titleFlex.style.justifyContent = "flex-start";
+    titleFlex.style.gap = "10px";
     titleFlex.style.width = "100%";
     titleFlex.style.height = "100%";
+
     this._titleFlex = titleFlex;
     flexContainer.appendChild(titleFlex);
   }
@@ -190,9 +191,8 @@ export class NewLoader extends DefaultLoader {
 
   private _createAttributeText(titleRootDiv: HTMLDivElement) {
     const extitle = document.createElement("div");
-    extitle.style.position = "absolute";
     extitle.style.width = "100%";
-    extitle.style.height = "auto";
+    extitle.style.height = "30px";
     extitle.style.textAlign = "center";
     extitle.style.display = "block";
     extitle.style.fontFamily = "BagelFat";
