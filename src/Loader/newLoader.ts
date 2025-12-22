@@ -9,7 +9,7 @@ export class NewLoader extends DefaultLoader {
   progressBarOpacity: number = 1.0;
   isShowingStartingState: boolean = true;
   _locale: I18n;
-  version: string = "";
+  version: string = "1.5.0";
 
   _titleFlex: HTMLDivElement | undefined;
   _UIFlex: HTMLDivElement | undefined;
@@ -158,7 +158,7 @@ export class NewLoader extends DefaultLoader {
 
   private _createPlayButton(): HTMLButtonElement {
     const playButton = document.createElement("button");
-    playButton.classList.add("play-button");
+    playButton.classList.add("start_button");
     playButton.textContent = "Play";
     return playButton;
   }
@@ -201,7 +201,9 @@ export class NewLoader extends DefaultLoader {
     const versionText = document.createElement("div");
     versionText.id = "version-text";
     versionText.textContent = "Version: " + this.version;
-    versionText.style.position = "fixed";
+    versionText.style.position = "absolute";
+    versionText.style.fontFamily = "BagelFat";
+    versionText.style.zIndex = "1005";
     versionText.style.bottom = "5px";
     versionText.style.left = "2px";
 
@@ -286,7 +288,6 @@ export class NewLoader extends DefaultLoader {
     extitle.style.fontSize = "18px";
     extitle.style.zIndex = "1001";
     extitle.innerText = this._locale.t("loader.attribution");
-    extitle.innerText = "Created with ExcaliburJS";
     titleRootDiv.appendChild(extitle);
 
     const exIcon = document.createElement("img");
@@ -325,26 +326,6 @@ export class NewLoader extends DefaultLoader {
 
   //  ***************  UI utilities  *************** //
 
-  initVersion() {
-    if (!("serviceWorker" in navigator)) return;
-    // Already controlling
-    if (navigator.serviceWorker.controller) {
-      this._fetchVersion();
-      return;
-    }
-
-    // Wait once for control
-    navigator.serviceWorker.addEventListener("controllerchange", () => this._fetchVersion(), { once: true });
-  }
-
-  private async _fetchVersion() {
-    console.log("version getting fetched");
-
-    const version = await getAppVersion();
-    this.version = version ?? "";
-    this._updateVersionText();
-  }
-
   private _updateLocaleText(code: string) {
     let button = this._playbutton;
     let attribute = this._attributionDiv;
@@ -361,6 +342,7 @@ export class NewLoader extends DefaultLoader {
     exIcon.style.height = "20px";
     exIcon.style.top = "4px";
     exIcon.style.left = "4px";
+    exIcon.appendChild(exIcon);
     if (attribute) attribute.appendChild(exIcon);
   }
 
@@ -390,7 +372,7 @@ export class NewLoader extends DefaultLoader {
   private _showAllUI = () => {
     setTimeout(() => {
       this._playbutton!.style.visibility = "visible";
-    }, 1500);
+    }, 2000);
 
     this._attributionDiv = this._createAttributeText(this._titleFlex as HTMLDivElement);
     this._titleImage = this._createTitleImage(this._titleFlex as HTMLDivElement);
@@ -398,24 +380,6 @@ export class NewLoader extends DefaultLoader {
     this._versionTextDiv = this._createVersionText(this._gameRootDiv);
     this._createElectricianImage(this._gameRootDiv);
     this._createElectricalPanelImage(this._gameRootDiv);
+    this._updateLocaleText("us");
   };
-}
-
-export function getAppVersion(): Promise<string | null> {
-  return new Promise(resolve => {
-    console.log("here");
-
-    if (!navigator.serviceWorker?.controller) {
-      resolve(null);
-      return;
-    }
-
-    const channel = new MessageChannel();
-
-    channel.port1.onmessage = event => {
-      resolve(event.data?.version ?? null);
-    };
-
-    navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" }, [channel.port2]);
-  });
 }

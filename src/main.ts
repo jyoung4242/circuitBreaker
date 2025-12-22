@@ -22,29 +22,25 @@ import { GameScene } from "./Scenes/Game";
 await UI.create(document.body, model, template).attached;
 // In your main.ts or wherever you register the SW
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/sw.js")
-    .then(reg => {
-      // Wait for SW to be ready
-      navigator.serviceWorker.ready.then(async () => {
-        // Check if we have a controller
-        if (!navigator.serviceWorker.controller) {
-          return;
-        }
-
-        // Try to get version
-        const messageChannel = new MessageChannel();
-
-        messageChannel.port1.onmessage = () => {};
-
-        // Send message
-        navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" }, [messageChannel.port2]);
-
-        // Timeout
-        setTimeout(() => {}, 3000);
-      });
-    })
-    .catch(err => {});
+  // navigator.serviceWorker
+  //   .register("/sw.js")
+  //   .then(reg => {
+  //     // Wait for SW to be ready
+  //     navigator.serviceWorker.ready.then(async () => {
+  //       // Check if we have a controller
+  //       if (!navigator.serviceWorker.controller) {
+  //         return;
+  //       }
+  //       // Try to get version
+  //       const messageChannel = new MessageChannel();
+  //       messageChannel.port1.onmessage = () => {};
+  //       // Send message
+  //       navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" }, [messageChannel.port2]);
+  //       // Timeout
+  //       setTimeout(() => {}, 3000);
+  //     });
+  //   })
+  //   .catch(err => {});
 }
 
 const game = new Engine({

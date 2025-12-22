@@ -2,11 +2,13 @@
 import { FontSource, ImageSource } from "excalibur";
 import title from "./Assets/Title.png"; // replace this
 import bagelFont from "./Assets/BagelFat.ttf";
-// import { CustomLoader } from "./Loader/CustomLoader";
 import BarsPanel from "./Assets/BarsPanel.png";
 import bolt from "./Assets/bolt.png";
 import clock from "./Assets/watch.png";
 import coin from "./Assets/coin.png";
+import homeIcon from "./Assets/home.png";
+import pokerIcon from "./Assets/poker.png";
+import shopIcon from "./Assets/shop.png";
 
 import { I18n } from "./Lib/I18n";
 import en from "./Lib/langs/en.json";
@@ -28,10 +30,12 @@ export const Resources = {
   bolt: new ImageSource(bolt),
   coin: new ImageSource(coin),
   clock: new ImageSource(clock),
+  homeIcon: new ImageSource(homeIcon),
+  pokerIcon: new ImageSource(pokerIcon),
+  shopIcon: new ImageSource(shopIcon),
 };
 
 export const loader = new NewLoader(i18n);
-await loader.initVersion();
 
 for (let res of Object.values(Resources)) {
   loader.addResource(res);

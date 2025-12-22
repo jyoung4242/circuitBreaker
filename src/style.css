@@ -233,12 +233,12 @@ body {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 60vw;
+  width: 50%;
   height: auto;
-  max-height: 70vh;
   object-fit: contain;
   transform: translateX(-100%);
-  animation: slideIn 1s ease-out 0.4s forwards;
+  animation: slideIn 1s ease-out 0.5s forwards;
+  z-index: 1002;
 }
 
 @keyframes slideIn {
@@ -251,25 +251,12 @@ body {
 }
 
 /* Panel Image - Responsive */
-.panel-image-panel {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  z-index: 1001;
-  pointer-events: none;
-  overflow: hidden;
-}
 
 .panel-image {
   position: absolute;
   right: 0;
   bottom: 0;
-  width: min(500px, 50vw);
+  width: 50%;
   height: auto;
   max-height: 70vh;
   object-fit: contain;
@@ -333,7 +320,7 @@ body {
 @media (max-width: 768px) {
   .start_button {
     top: 80%;
-    width: 85vw;
+    width: 85%;
     height: 110px;
   }
 
@@ -343,8 +330,7 @@ body {
 
   .dude-image,
   .panel-image {
-    width: 60vw;
-    max-height: 60vh;
+    width: 50%;
   }
 }
 
@@ -357,8 +343,7 @@ body {
 
   .dude-image,
   .panel-image {
-    width: 60vw;
-    max-height: 60vh;
+    width: 50%;
   }
 
   .loading-text {
