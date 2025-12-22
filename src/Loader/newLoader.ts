@@ -51,6 +51,7 @@ export class NewLoader extends DefaultLoader {
       document.body.appendChild(rootDiv);
       rootDiv.id = "excalibur-play-root";
       rootDiv.style.position = "absolute";
+      rootDiv.style.overflow = "hidden";
       rootDiv.style.zIndex = "1000";
       rootDiv.style.background = `radial-gradient(circle,${this._backgroundColor1} 17%, ${this._backgroundColor2} 100%)`;
       this._UIFlex = this._createFlexUIContainer(rootDiv);
@@ -275,7 +276,7 @@ export class NewLoader extends DefaultLoader {
     return widget;
   }
 
-  private _createAttributeText(titleRootDiv: HTMLDivElement) {
+  private _createAttributeText(titleRootDiv: HTMLDivElement): HTMLDivElement {
     const extitle = document.createElement("div");
     extitle.style.width = "100%";
     extitle.style.height = "30px";
@@ -299,6 +300,24 @@ export class NewLoader extends DefaultLoader {
     return extitle;
   }
 
+  private _createElectricianImage(rootDiv: HTMLDivElement): HTMLDivElement {
+    const electricianImage = document.createElement("img");
+    electricianImage.id = "electrician-image";
+    electricianImage.classList.add("dude-image");
+    electricianImage.src = "./src/Assets/electrician.png";
+    rootDiv.appendChild(electricianImage);
+    return electricianImage;
+  }
+
+  private _createElectricalPanelImage(rootDiv: HTMLDivElement): HTMLDivElement {
+    const electricalPanelImage = document.createElement("img");
+    electricalPanelImage.id = "electrical-panel-image";
+    electricalPanelImage.classList.add("panel-image");
+    electricalPanelImage.src = "./src/Assets/electrical panel.png";
+    rootDiv.appendChild(electricalPanelImage);
+    return electricalPanelImage;
+  }
+
   //  ***************  CLEANUP  *************** //
   dispose() {
     this._gameRootDiv.remove();
@@ -308,7 +327,6 @@ export class NewLoader extends DefaultLoader {
 
   initVersion() {
     if (!("serviceWorker" in navigator)) return;
-    window.alert("found service worker, now fetching version");
     // Already controlling
     if (navigator.serviceWorker.controller) {
       this._fetchVersion();
@@ -370,11 +388,16 @@ export class NewLoader extends DefaultLoader {
   };
 
   private _showAllUI = () => {
-    this._playbutton!.style.visibility = "visible";
+    setTimeout(() => {
+      this._playbutton!.style.visibility = "visible";
+    }, 1500);
+
     this._attributionDiv = this._createAttributeText(this._titleFlex as HTMLDivElement);
     this._titleImage = this._createTitleImage(this._titleFlex as HTMLDivElement);
     this._i18nWidgetDiv = this._createI18nWidget(this._gameRootDiv);
     this._versionTextDiv = this._createVersionText(this._gameRootDiv);
+    this._createElectricianImage(this._gameRootDiv);
+    this._createElectricalPanelImage(this._gameRootDiv);
   };
 }
 
@@ -394,28 +417,5 @@ export function getAppVersion(): Promise<string | null> {
     };
 
     navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" }, [channel.port2]);
-  });
-}
-async function getAppVersionSafe(): Promise<string | null> {
-  if (!("serviceWorker" in navigator)) return null;
-
-  // Wait until a service worker is ready
-  await navigator.serviceWorker.ready;
-
-  // If still no controller, force a reload ONCE
-  if (!navigator.serviceWorker.controller) {
-    console.warn("SW installed but not controlling yet, reload required");
-    window.location.reload();
-    return null;
-  }
-
-  return new Promise(resolve => {
-    const channel = new MessageChannel();
-
-    channel.port1.onmessage = event => {
-      resolve(event.data?.version ?? null);
-    };
-
-    navigator.serviceWorker.controller!.postMessage({ type: "GET_VERSION" }, [channel.port2]);
   });
 }

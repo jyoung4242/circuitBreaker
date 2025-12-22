@@ -25,41 +25,26 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/sw.js")
     .then(reg => {
-      alert("SW registered!");
-
       // Wait for SW to be ready
       navigator.serviceWorker.ready.then(async () => {
-        alert("SW is ready");
-
         // Check if we have a controller
         if (!navigator.serviceWorker.controller) {
-          alert("No controller - will work after refresh");
           return;
         }
 
         // Try to get version
         const messageChannel = new MessageChannel();
 
-        messageChannel.port1.onmessage = event => {
-          if (event.data && event.data.version) {
-            alert("SW Version: " + event.data.version);
-          } else {
-            alert("Got message but no version: " + JSON.stringify(event.data));
-          }
-        };
+        messageChannel.port1.onmessage = () => {};
 
         // Send message
         navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" }, [messageChannel.port2]);
 
         // Timeout
-        setTimeout(() => {
-          alert("Version fetch timed out - no response from SW");
-        }, 3000);
+        setTimeout(() => {}, 3000);
       });
     })
-    .catch(err => {
-      alert("SW registration failed: " + err.message);
-    });
+    .catch(err => {});
 }
 
 const game = new Engine({
