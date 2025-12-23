@@ -258,7 +258,6 @@ body {
   bottom: 0;
   width: 50%;
   height: auto;
-  max-height: 70vh;
   object-fit: contain;
   transform: translateY(100%);
   animation: slideUp 1s ease-out 0.2s forwards;
@@ -328,9 +327,12 @@ body {
     top: 82%;
   }
 
-  .dude-image,
+  .dude-image {
+    width: 60%;
+  }
+
   .panel-image {
-    width: 50%;
+    width: 30%;
   }
 }
 
@@ -341,9 +343,12 @@ body {
     font-size: 20px;
   }
 
-  .dude-image,
+  .dude-image {
+    width: 60%;
+  }
+
   .panel-image {
-    width: 50%;
+    width: 30%;
   }
 
   .loading-text {
