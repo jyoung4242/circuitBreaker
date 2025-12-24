@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { VitePWA } from "vite-plugin-pwa";
+// import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   base: "./",
@@ -7,5 +7,5 @@ export default defineConfig({
     target: "esnext", //browsers can handle the latest ES features
   },
   assetsInclude: ["**/*.png", "**/*.jpg", "**/*.svg", "**/*.tff"],
-  plugins: [VitePWA({ registerType: "autoUpdate" })],
+  //plugins: [VitePWA({ registerType: "autoUpdate" })],
 });

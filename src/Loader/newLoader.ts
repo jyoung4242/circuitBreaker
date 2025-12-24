@@ -3,13 +3,14 @@ import { I18n } from "../Lib/I18n";
 // import { CACHE_VERSION } from "../../sw";
 
 export class NewLoader extends DefaultLoader {
+  version: string = "1.6.1";
+
   _backgroundColor1: string = ` hsla(235, 35%, 29%, 1)`;
   _backgroundColor2: string = `hsla(231, 56%, 14%, 1)`;
   fadeProgressBar: boolean = false;
   progressBarOpacity: number = 1.0;
   isShowingStartingState: boolean = true;
   _locale: I18n;
-  version: string = "1.5.0";
 
   _titleFlex: HTMLDivElement | undefined;
   _UIFlex: HTMLDivElement | undefined;
@@ -18,11 +19,11 @@ export class NewLoader extends DefaultLoader {
   _i18nWidgetDiv: HTMLDivElement | undefined;
   _attributionDiv: HTMLDivElement | undefined;
   _versionTextDiv: HTMLDivElement | undefined;
+  _electricianImage: HTMLDivElement | undefined;
+  _panelImage: HTMLDivElement | undefined;
   public screen: Screen | undefined = undefined;
   _gameRootDiv: HTMLDivElement = document.createElement("div");
   _progressBarDiv: HTMLDivElement = document.createElement("div");
-
-  i18n: I18n;
 
   private static _DEFAULT_LOADER_OPTIONS: LoaderOptions = {
     loadables: [],
@@ -32,7 +33,6 @@ export class NewLoader extends DefaultLoader {
 
   constructor(i18n: I18n) {
     super(NewLoader._DEFAULT_LOADER_OPTIONS);
-    this.i18n = i18n;
     this._positionAndSizeRoot(this._gameRootDiv);
     this._createProgressBar(this._gameRootDiv);
     this._locale = i18n;
@@ -106,7 +106,6 @@ export class NewLoader extends DefaultLoader {
       this.engine.browser.window.on("resize", this._positionAndSizeRoot.bind(this, this._gameRootDiv));
     }
     this._positionAndSizeRoot(this._gameRootDiv);
-    // this.isLocalizationInitialized = true;
   }
 
   onDraw(): void {
@@ -342,13 +341,7 @@ export class NewLoader extends DefaultLoader {
     exIcon.style.height = "20px";
     exIcon.style.top = "4px";
     exIcon.style.left = "4px";
-    exIcon.appendChild(exIcon);
     if (attribute) attribute.appendChild(exIcon);
-  }
-
-  private _updateVersionText() {
-    const versionText = this._versionTextDiv;
-    if (versionText) versionText.textContent = "Version: " + this.version;
   }
 
   private _setProgress(value: number) {
@@ -378,8 +371,8 @@ export class NewLoader extends DefaultLoader {
     this._titleImage = this._createTitleImage(this._titleFlex as HTMLDivElement);
     this._i18nWidgetDiv = this._createI18nWidget(this._gameRootDiv);
     this._versionTextDiv = this._createVersionText(this._gameRootDiv);
-    this._createElectricianImage(this._gameRootDiv);
-    this._createElectricalPanelImage(this._gameRootDiv);
+    this._electricianImage = this._createElectricianImage(this._gameRootDiv);
+    this._panelImage = this._createElectricalPanelImage(this._gameRootDiv);
     this._updateLocaleText("us");
   };
 }

@@ -9,6 +9,7 @@ import coin from "./Assets/coin.png";
 import homeIcon from "./Assets/home.png";
 import pokerIcon from "./Assets/poker.png";
 import shopIcon from "./Assets/shop.png";
+import settingIcon from "./Assets/settingsIcon.png";
 
 import { I18n } from "./Lib/I18n";
 import en from "./Lib/langs/en.json";
@@ -33,6 +34,7 @@ export const Resources = {
   homeIcon: new ImageSource(homeIcon),
   pokerIcon: new ImageSource(pokerIcon),
   shopIcon: new ImageSource(shopIcon),
+  settingsIcon: new ImageSource(settingIcon),
 };
 
 export const loader = new NewLoader(i18n);

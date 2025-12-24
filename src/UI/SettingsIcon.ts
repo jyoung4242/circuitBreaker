@@ -3,20 +3,17 @@ import { Resources } from "../resources";
 import { Signal } from "../Lib/Signals";
 import { createGleamMaterial } from "../Shaders/gleamMaterial";
 import { TestScaleToWithOptions } from "../Lib/testScaleTo";
-
-export class ShopIcon extends ScreenElement {
-  showShopSignal = new Signal("showShop");
+export class SettingsIcon extends ScreenElement {
+  showSettingsSignal = new Signal("showSettings");
   isHovered = false;
   lastGlintTime = 0;
   glintInterval = 2500;
-
   constructor(pos: Vector, size: Vector) {
     super({ pos, width: size.x, height: size.y, anchor: Vector.Half });
-    this.graphics.use(Resources.shopIcon.toSprite());
+    this.graphics.use(Resources.settingsIcon.toSprite());
   }
-
   onInitialize(engine: Engine): void {
-    this.on("pointerup", this.showShop);
+    this.on("pointerup", this.showSettings);
     this.on("pointerenter", this.hover);
     this.on("pointerleave", this.leave);
     this.graphics.material = createGleamMaterial(engine);
@@ -33,16 +30,15 @@ export class ShopIcon extends ScreenElement {
     this.isHovered = false;
   };
 
-  showShop = (): void => {
+  showSettings = (): void => {
     this.actions
       .runAction(new TestScaleToWithOptions(this, { scale: vec(1.2, 1.2), duration: 350 }))
       .toPromise()
       .then(() => {
         this.actions.runAction(new TestScaleToWithOptions(this, { scale: vec(1, 1), duration: 100 }));
       });
-    this.showShopSignal.send();
+    this.showSettingsSignal.send();
   };
-
   onPreUpdate(engine: Engine): void {
     const currentTime = engine.clock.now();
 
