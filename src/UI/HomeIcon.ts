@@ -14,6 +14,7 @@ export class HomeIcon extends ScreenElement {
     this.graphics.use(Resources.homeIcon.toSprite());
   }
   onInitialize(engine: Engine): void {
+    this.on("pointerdown", this.growIcon);
     this.on("pointerup", this.showHome);
     this.on("pointerenter", this.hover);
     this.on("pointerleave", this.leave);
@@ -31,13 +32,12 @@ export class HomeIcon extends ScreenElement {
     this.isHovered = false;
   };
 
+  growIcon = (): void => {
+    this.actions.runAction(new TestScaleToWithOptions(this, { scale: vec(1.2, 1.2), duration: 350 }));
+  };
+
   showHome = (): void => {
-    this.actions
-      .runAction(new TestScaleToWithOptions(this, { scale: vec(1.2, 1.2), duration: 350 }))
-      .toPromise()
-      .then(() => {
-        this.actions.runAction(new TestScaleToWithOptions(this, { scale: vec(1, 1), duration: 100 }));
-      });
+    this.actions.runAction(new TestScaleToWithOptions(this, { scale: vec(1, 1), duration: 100 }));
     this.showHomeSignal.send();
   };
 
