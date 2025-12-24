@@ -3,7 +3,7 @@ import { I18n } from "../Lib/I18n";
 // import { CACHE_VERSION } from "../../sw";
 
 export class NewLoader extends DefaultLoader {
-  version: string = "1.6.1";
+  version: string = "1.6.3";
 
   _backgroundColor1: string = ` hsla(235, 35%, 29%, 1)`;
   _backgroundColor2: string = `hsla(231, 56%, 14%, 1)`;
